@@ -1,0 +1,107 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ~/.vimrc                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ 
+set number
+syntax on
+colorscheme solarized
+filetype plugin on
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+set ofu=syntaxcomplete#Complete
+ 
+filetype plugin indent on
+ 
+"  '10 : marks will be remembered for up to 10 previously edited files
+"  "100 : will save up to 100 lines for each register
+"  :5000 : up to 5000 lines of command-line history will be remembered
+"  % : saves and restores the buffer list
+"  n... : where to save the viminfo files
+set viminfo='10,\"100,:5000,%,n~/.viminfo
+ 
+set completeopt=longest,menuone
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {<CR>}<ESC>O
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
+ 
+set complete+=kspell
+ 
+set ignorecase
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+
+set hlsearch
+ 
+set foldmethod=manual foldlevelstart=99 foldopen=all,insert foldclose=all
+ 
+set wildmenu wildmode=list:full
+ 
+set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
+set wildignore+=*.jpg,*.bmp,*.gif " binary images
+set wildignore+=*.luac " Lua byte code
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
+set wildignore+=*.pyc " Python byte code
+set wildignore+=*.spl " compiled spelling word lists
+set wildignore+=*.sw? " Vim swap files
+ 
+ 
+let php_sql_query=1
+let php_htmlInStrings=1
+let g:php_folding=2
+
+nnoremap <silent> <F8> :bNext<CR>
+nnoremap <silent> <F9> :bnext<CR>
+nnoremap <silent> <F5> :TlistToggle<CR>
+nnoremap <silent> <F4> :NERDTreeToggle<CR>
+nnoremap <silent> <F6> :MBEToggle<CR>
+set tags=tags
+set autochdir
+let Tlist_Exit_OnlyWindow = 1     " exit if taglist is last window open
+let Tlist_Show_One_File = 1       " Only show tags for current buffer
+let Tlist_Enable_Fold_Column = 0  " no fold column (only showing one file)
+let tlist_sql_settings = 'sql;P:package;t:table'
+let tlist_ant_settings = 'ant;p:Project;r:Property;t:Target'
+ 
+autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | lcd %:p:h | endif
+ 
+augroup JumpCursorOnEdit
+ au!
+ autocmd BufReadPost *
+ \ if expand("<afile>:p:h") !=? $TEMP |
+ \ if line("'\"") > 1 && line("'\"") <= line("$") |
+ \ let JumpCursorOnEdit_foo = line("'\"") |
+ \ let b:doopenfold = 1 |
+ \ if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
+ \ let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
+ \ let b:doopenfold = 2 |
+ \ endif |
+ \ exe JumpCursorOnEdit_foo |
+ \ endif |
+ \ endif
+ " Need to postpone using "zv" until after reading the modelines.
+ autocmd BufWinEnter *
+ \ if exists("b:doopenfold") |
+ \ exe "normal zv" |
+ \ if(b:doopenfold > 1) |
+ \ exe "+".1 |
+ \ endif |
+ \ unlet b:doopenfold |
+ \ endif
+augroup END

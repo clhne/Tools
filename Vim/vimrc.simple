@@ -1,0 +1,52 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ~/.vimrc                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ 
+set number
+syntax enable
+set background=dark
+colorscheme solarized
+ 
+filetype plugin indent on
+ 
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {<CR>}<ESC>O
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
+ 
+ 
+set ignorecase
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+
+set hlsearch
+ 
+set nofoldenable
+set nobackup
+ 
+
+nnoremap <silent> <F8> :bNext<CR>
+nnoremap <silent> <F9> :bnext<CR>
+nnoremap <silent> <F5> :TlistToggle<CR>
+nnoremap <silent> <F4> :NERDTreeToggle<CR>
+nnoremap <silent> <F6> :MBEToggle<CR>
+set tags=tags
+let Tlist_Exit_OnlyWindow = 1     " exit if taglist is last window open
+let Tlist_Show_One_File = 1       " Only show tags for current buffer
+let Tlist_Enable_Fold_Column = 0  " no fold column (only showing one file)
