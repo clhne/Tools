@@ -1,0 +1,13 @@
+lc1860_exposure_compensation_-6.jpg 4096
+lc1860_exposure_compensation_-5.jpg 2048
+lc1860_exposure_compensation_-4.jpg 1024
+lc1860_exposure_compensation_-3.jpg 512
+lc1860_exposure_compensation_-2.jpg 256
+lc1860_exposure_compensation_-1.jpg 128
+lc1860_exposure_compensation_0.jpg 64
+lc1860_exposure_compensation_1.jpg 32
+lc1860_exposure_compensation_2.jpg 16
+lc1860_exposure_compensation_3.jpg 8
+lc1860_exposure_compensation_4.jpg 4
+lc1860_exposure_compensation_5.jpg 2
+lc1860_exposure_compensation_6.jpg 1

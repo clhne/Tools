@@ -1,0 +1,3 @@
+st0.jpg 40.0
+st1.jpg 10.0
+st2.jpg 2.0

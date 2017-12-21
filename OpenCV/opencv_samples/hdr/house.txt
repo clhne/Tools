@@ -1,0 +1,4 @@
+house.0.bmp 12
+house.1.bmp 8
+house.2.bmp 4
+house.3.bmp 2
