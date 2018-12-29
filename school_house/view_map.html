@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>地图DEMO</title>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=2.0&ak=E1ec599cbc4a8006eb37d99cf002e054"></script>
+<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/equipmentMapUtil.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var map = new BMap.Map("allmap"); // 创建Map实例
+		map.centerAndZoom("上海", 15);
+		map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+
+		var options = {
+			renderOptions : {
+				map : map,
+				selectFirstResult : true
+			},
+			onSearchComplete : function(results) {
+				//这个函数会被调用两次
+			}
+		};
+
+		map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+		
+		/**
+		 * 第一个参数是城市名，第二参数是小区名 
+		 */
+		var showArea = function(city, area){
+			queryHouse(area, city, "E1ec599cbc4a8006eb37d99cf002e054", function(data){
+				if(data.message == 'ok'){
+					var houses = data.results;
+					if(houses && houses.length > 0){
+						var house = houses[0];
+						queryHouseOutline(house.uid, function(houseOutline){
+							var geo = houseOutline.content.geo; if(!geo){ var location = house.location;
+								var point = new BMap.Point(location.lng, location.lat);
+								map.centerAndZoom(point, 19);
+								var marker = new BMap.Marker(point);
+								marker.setAnimation(BMAP_ANIMATION_BOUNCE); 
+								map.addOverlay(marker);
+							}else{
+								//map.clearOverlays();
+								var geoObj = parseGeo(geo);
+								//var bounds = coordinateToPoints(geoObj.bound);
+								//边界点
+								var points = coordinateToPoints(map, geoObj.points);
+								var ply = new BMap.Polygon(points, {
+									strokeWeight: 2,
+									strokeColor: "#F01B2D",
+									strokeOpacity: 0.9,
+									fillColor : "#FFEBCC"
+								}); //建立多边形覆盖物
+								map.addOverlay(ply); //添加覆盖物
+								//map.setViewport(ply.getPath()); //调整视野 
+							}
+						});
+					}
+				}
+			});
+		};
+		//showArea($('#cityId').val(), $('#areaId').val());
+		fetch("database/house_info.json").then(response => response.json()).then(data => {
+			console.log(data)
+			return data.map((line, i) => new Promise(resolve => {
+				setTimeout(() => {
+					showArea('上海', line['commu']);
+					resolve();
+				}, i*1000);
+			}));
+		//	})
+		});
+		$('#showBtn').click(function(){
+			debugger;
+			showArea($('#cityId').val(), $('#areaId').val());
+			showArea($('#cityId').val(), $('#areaId').val());
+		});
+	});
+</script>
+</head>
+<body>
+	<table>
+		<tr>
+			<td>城市:</td>
+			<td><input id="cityId" type="text" value="上海" /></td>
+			<td>小学:</td>
+			<td><input id="areaId" type="text" value="明珠小学" /></td>
+			<td>
+				<button id="showBtn">显示</button>
+			</td>
+		</tr>
+	</table>
+	<div id="allmap" style="width: 1360px; height: 720px;"></div>
+	<script type="text/javascript">
+		
+	</script>
+</body>
+</html>
